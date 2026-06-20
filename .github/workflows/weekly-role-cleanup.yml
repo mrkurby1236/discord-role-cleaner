@@ -1,0 +1,42 @@
+name: Weekly Discord Role Cleanup
+
+on:
+  schedule:
+    # Sunday 4:05 PM UTC = Monday 12:05 AM Philippines time
+    - cron: "5 16 * * 0"
+
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only check members; do not remove the role"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+jobs:
+  remove-role:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Remove Discord role
+        run: python remove_role.py
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          DISCORD_ROLE_ID: ${{ secrets.DISCORD_ROLE_ID }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          SKIP_BOTS: "true"
