@@ -2,8 +2,9 @@ name: Weekly Discord Role Cleanup
 
 on:
   schedule:
-    # Sunday 4:05 PM UTC = Monday 12:05 AM Philippines time
-    - cron: "5 16 * * 0"
+    # Every Monday at 12:05 AM Philippines time
+    - cron: "5 0 * * 1"
+      timezone: "Asia/Manila"
 
   workflow_dispatch:
     inputs:
